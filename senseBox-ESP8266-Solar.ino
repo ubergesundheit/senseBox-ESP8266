@@ -25,7 +25,7 @@ IPAddress static_ip = IPAddress(192, 168, 0, 30);
 IPAddress gateway_ip = IPAddress(192, 168, 0, 1);
 IPAddress netmask = IPAddress(255, 255, 255, 0);
 
-#define sleepSec 60e6 // 60 seconds. This value is in microseconds
+#define sleepSec 300e6 // 300 seconds. This value is in microseconds
 
 //SenseBox ID
 #define SENSEBOX_ID "<SENSEBOX_ID>"
@@ -37,6 +37,7 @@ IPAddress netmask = IPAddress(255, 255, 255, 0);
 #define LUXSENSOR_ID "<LUXSENSOR_ID>"
 #define UVSENSOR_ID "<UVSENSOR_ID>"
 //#define WIFI_STRENGTH_ID "<WIFI_STRENGTH_ID>"
+//#define INPUT_VOLTAGE_ID "<INPUT_VOLTAGE_ID>"
 
 #define urlTemplateBulk "http://opensensemap.org:8000/boxes/%s/data"
 
@@ -48,8 +49,11 @@ Makerblog_TSL45315 TSL = Makerblog_TSL45315(TSL45315_TIME_M4);
 HDC100X HDC(0x43);
 BME280 bme;
 
+// enable voltage reading of esp with ESP.getVcc()
+ADC_MODE(ADC_VCC);
+
 //measurement variables
-float temp(NAN), hum(NAN), pres(NAN), humidity(NAN), temperature(NAN);
+float temp(NAN), hum(NAN), pres(NAN), humidity(NAN), temperature(NAN), voltage(NAN);
 uint8_t pressureUnit(1); //hPa
 uint32_t lux(NAN);
 uint16_t uv(NAN);
@@ -137,6 +141,12 @@ void setup() {
   // JsonObject& wifiObject = array.createNestedObject();
   // wifiObject["sensor"] = WIFI_STRENGTH_ID;
   // wifiObject["value"] = formatValue(WiFi.RSSI(), 0);
+
+  // esp input voltage
+  // voltage = ESP.getVcc();
+  // JsonObject& voltageObject = array.createNestedObject();
+  // voltageObject["sensor"] = INPUT_VOLTAGE_ID;
+  // voltageObject["value"] = formatValue(voltage/1024.00f, 2);
 
   delay(1000);
 
