@@ -21,6 +21,8 @@
 #define ssid "WiFi Name"
 #define password "WiFi Password"
 
+// If you give the esp a static IP conifiguration,
+// the ESP spends less time getting DHCP and so on
 IPAddress static_ip = IPAddress(192, 168, 0, 30);
 IPAddress gateway_ip = IPAddress(192, 168, 0, 1);
 IPAddress netmask = IPAddress(255, 255, 255, 0);
@@ -36,10 +38,8 @@ IPAddress netmask = IPAddress(255, 255, 255, 0);
 #define PRESSURESENSOR_ID "<PRESSURESENSOR_ID>"
 #define LUXSENSOR_ID "<LUXSENSOR_ID>"
 #define UVSENSOR_ID "<UVSENSOR_ID>"
-//#define WIFI_STRENGTH_ID "<WIFI_STRENGTH_ID>"
-//#define INPUT_VOLTAGE_ID "<INPUT_VOLTAGE_ID>"
 
-#define urlTemplateBulk "http://opensensemap.org:8000/boxes/%s/data"
+#define urlTemplateBulk "http://ingress.opensensemap.org/boxes/%s/data"
 
 WiFiClient client;
 HTTPClient http;
@@ -53,11 +53,10 @@ BME280 bme;
 ADC_MODE(ADC_VCC);
 
 //measurement variables
-float temp(NAN), hum(NAN), pres(NAN), humidity(NAN), temperature(NAN), voltage(NAN);
+float temp(NAN), hum(NAN), pres(NAN), humidity(NAN), temperature(NAN);
 uint8_t pressureUnit(1); //hPa
 uint32_t lux(NAN);
 uint16_t uv(NAN);
-int wifidBm;
 #define UV_ADDR 0x38
 #define IT_1   0x1
 
@@ -136,19 +135,6 @@ void setup() {
   uvObject["sensor"] = UVSENSOR_ID;
   uvObject["value"] = formatValue(uv, 0);
   delay(200);
-
-  //wifi.. Remember you have to register every additional sensor before you can submit values for it
-  // JsonObject& wifiObject = array.createNestedObject();
-  // wifiObject["sensor"] = WIFI_STRENGTH_ID;
-  // wifiObject["value"] = formatValue(WiFi.RSSI(), 0);
-
-  // esp input voltage
-  // voltage = ESP.getVcc();
-  // JsonObject& voltageObject = array.createNestedObject();
-  // voltageObject["sensor"] = INPUT_VOLTAGE_ID;
-  // voltageObject["value"] = formatValue(voltage/1024.00f, 2);
-
-  delay(1000);
 
   char buffer[500];
   array.printTo(buffer, sizeof(buffer));
